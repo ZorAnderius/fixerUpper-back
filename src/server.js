@@ -1,4 +1,4 @@
-import app from "./serverConfig/initExpress.js";
+import app from "./app";
 
 const PORT = 3000;
 
