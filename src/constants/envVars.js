@@ -10,3 +10,5 @@ const ENV_VARS = Object.freeze({
     DB_HOST: 'DB_HOST',
   },
 })
+
+export default ENV_VARS;
