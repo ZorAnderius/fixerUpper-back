@@ -1,6 +1,6 @@
 import { DataTypes, Model } from "sequelize";
-import { emailRegexp, phoneRegexp } from "../../constants/regex";
-import { userRole } from "../../constants/dbStaticData";
+import { emailRegexp, phoneRegexp } from "../../constants/regex.js";
+import { userRole } from "../../constants/dbStaticData.js";
 
 class User extends Model {
   static initModel(sequelize) {
@@ -15,7 +15,7 @@ class User extends Model {
       role: { type: DataTypes.STRING, defaultValue: 'customer', allowNull: false, validate: { isIn: [userRole] } },
     }, {
       sequelize,
-      modelName: 'user',
+      modelName: 'User',
       tableName: 'users',
       timestamps: true,
       underscored: true
@@ -23,7 +23,9 @@ class User extends Model {
   }
 
   static associate(model) {
-
+    User.hasOne(model.Cart, { foreignKey: 'user_id', onDelete: 'CASCADE', as: 'cart' });
+    User.hasMany(model.Order, { foreignKey: 'user_id', onDelete: 'CASCADE', as: 'orers' });
+    User.hasMany(model.RefreshToken, { foreignKey: 'user_id', onDelete: 'CASCADE', as: 'refreshTokens' });
   }
 }
 

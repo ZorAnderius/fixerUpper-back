@@ -14,7 +14,7 @@ class Product extends Model {
     },
       {
         sequelize,
-        modelName: "product",
+        modelName: "Product",
         tableName: "products",
         timestamps: false,
         underscored: true
@@ -22,7 +22,10 @@ class Product extends Model {
   }
 
   static associate(model) {
-
+    Product.belongsTo(model.Category, { foreignKey: 'category_id', as: 'category' });
+    Product.belongsTo(model.ProductStatus, { foreignKey: 'status_id', as: 'status' });
+    Product.hasMany(model.OrderItem, { foreignKey: 'product_id', as: 'orderItem' });
+    Product.hasMany(model.CartItem, { foreignKey: 'product_id', as: 'cartItem' });
   }
 }
 

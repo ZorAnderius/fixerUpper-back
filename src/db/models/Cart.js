@@ -4,11 +4,11 @@ class Cart extends Model {
   static initModel(sequelize) {
     return Cart.init({
       id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-      user_id: { type: DataTypes.UUIDV4, allowNull: false }
+      user_id: { type: DataTypes.UUID, allowNull: false }
     },
       {
         sequelize,
-        modelName: 'cart',
+        modelName: 'Cart',
         tableName: 'carts',
         timestamps: false,
         underscored: true
@@ -16,7 +16,8 @@ class Cart extends Model {
   }
 
   static associate(model) {
-
+    Cart.belongsTo(model.User, { foreignKey: 'user_id', as: 'user' });
+    Cart.hasMany(model.CartItem, { foreignKey: 'cart_id', as: 'cartItems' });
   }
 }
 

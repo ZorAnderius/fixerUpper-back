@@ -16,7 +16,7 @@ class RefreshToken extends Model {
       },
       {
         sequelize,
-        modelName: 'refreshToken',
+        modelName: 'RefreshToken',
         tableName: 'refreshTokens',
         timestamps: false,
         underscored: true
@@ -24,7 +24,7 @@ class RefreshToken extends Model {
   }
 
   static associate(model) {
-
+    RefreshToken.belongsTo(model.User, { foreignKey: 'user_id', onDelete: 'CASCADE', as: 'user' });
   }
 }
 

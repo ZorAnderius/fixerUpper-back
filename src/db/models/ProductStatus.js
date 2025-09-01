@@ -1,5 +1,5 @@
 import { DataTypes, Model } from "sequelize";
-import { productStates } from "../../constants/dbStaticData";
+import { productStates } from "../../constants/dbStaticData.js";
 
 class ProductStatus extends Model {
 
@@ -11,7 +11,7 @@ class ProductStatus extends Model {
       },
       {
         sequelize,
-        modelName: 'productStatus',
+        modelName: 'ProductStatus',
         tableName: 'productStatuses',
         timestamps: false,
         underscored: true
@@ -19,7 +19,7 @@ class ProductStatus extends Model {
   }
 
   static associate(model) {
-
+    ProductStatus.hasMany(model.Product, { foreignKey: 'status_id', as: 'products' });
   }
 }
 

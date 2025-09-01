@@ -9,7 +9,7 @@ class Category extends Model {
       },
       {
         sequelize,
-        modelName: 'category',
+        modelName: 'Category',
         tableName: 'categories',
         timestamps: false,
         underscored: true
@@ -19,6 +19,7 @@ class Category extends Model {
 
 
   static associate(model) {
+    Category.hasMany(model.Product, { foreignKey: 'category_id', as: 'products' })
   }
 }
 

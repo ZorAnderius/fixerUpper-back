@@ -10,7 +10,7 @@ class Order extends Model {
     },
       {
         sequelize,
-        modelName: 'order',
+        modelName: 'Order',
         tableName: 'orders',
         timestamps: true,
         underscored: true
@@ -18,7 +18,8 @@ class Order extends Model {
   }
 
   static associate(model) {
-
+    Order.belongsTo(model.User, { foreignKey: 'user_id', as: 'user' });
+    Order.hasMany(model.OrderItem, { foreignKey: 'order_id', onDelete: 'CASCADE', as: 'orderItems' });
   }
 }
 
