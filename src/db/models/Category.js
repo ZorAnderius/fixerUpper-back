@@ -4,8 +4,8 @@ class Category extends Model {
   static initModel(sequelize) {
     return Category.init(
       {
-        id: { type: DataTypes.UUIDV4, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-        name: { type: DataTypes.UUIDV4, allowNull: false, unique: true }
+        id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+        name: { type: DataTypes.UUID, allowNull: false, unique: true }
       },
       {
         sequelize,

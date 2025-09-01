@@ -3,7 +3,7 @@ import { DataTypes, Model } from "sequelize";
 class Cart extends Model {
   static initModel(sequelize) {
     return Cart.init({
-      id: { type: DataTypes.UUIDV4, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+      id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
       user_id: { type: DataTypes.UUIDV4, allowNull: false }
     },
       {
@@ -15,7 +15,7 @@ class Cart extends Model {
       })
   }
 
-  static associate(modl){
+  static associate(model) {
 
   }
 }

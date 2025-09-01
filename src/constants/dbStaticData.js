@@ -21,3 +21,9 @@ export const category = [
   "Gardening Tools",
   "Automotive Tools"
 ];
+
+export const userRole = [
+  'customer',
+  'administrator',
+  'moderator'
+]

@@ -3,13 +3,14 @@ import { DataTypes, Model } from "sequelize";
 class Product extends Model {
   static initModel(sequelize) {
     return Product.init({
-      id: { type: DataTypes.UUIDV4, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+      id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
       title: { type: DataTypes.STRING, allowNull: false },
       description: { type: DataTypes.TEXT, allowNull: true },
-      quantity: { type: DataTypes.NUMBER, allowNull: false },
+      price: { type: DataTypes.DECIMAL(10, 2), allowNull: false, validate: { isDecimal: true, min: 0 } },
+      quantity: { type: DataTypes.INTEGER, allowNull: false, validate: { isInt: true, min: 0 }, defaultValue: 1 },
       image_url: { type: DataTypes.STRING, allowNull: true },
-      category_id: { type: DataTypes.UUIDV4, allowNull: false },
-      status_id: { type: DataTypes.UUIDV4, allowNull: false }
+      category_id: { type: DataTypes.UUID, allowNull: false },
+      status_id: { type: DataTypes.UUID, allowNull: false }
     },
       {
         sequelize,

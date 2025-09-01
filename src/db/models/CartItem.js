@@ -4,7 +4,7 @@ class CartItem extends Model {
   static initModel(sequelize) {
     return CartItem.init({
       id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-      quantity: { type: DataTypes.INTEGER, allowNull: false },
+      quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1, validate: { isInt: true, min: 0 } },
       card_id: { type: DataTypes.UUID, allowNull: false },
       product_id: { type: DataTypes.UUID, allowNull: false }
     },
