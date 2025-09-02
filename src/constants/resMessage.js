@@ -5,6 +5,8 @@ const responseMessage = Object.freeze({
     DELETED: 'User account deleted',
     NOT_FOUND: 'User not found',
     UNAUTHORIZED: 'Not authorized',
+    VALIDATE_INPUT: 'All fields are required',
+    EXIST: 'Email already in use'
   },
   PRODUCT: {
     CREATED: 'Product created successfully',
@@ -43,6 +45,7 @@ const responseMessage = Object.freeze({
     SUCCESS: 'Operation completed successfully',
     FAILURE: 'Something went wrong',
     VALIDATION_ERROR: 'Validation failed for the input data',
+    CHECK_BODY: 'Body must have at least one field',
     FORBIDDEN: 'Access denied',
     SERVER_ERROR: 'Internal server error',
     CSRF: 'CSRF header missing',
