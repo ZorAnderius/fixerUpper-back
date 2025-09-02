@@ -1,4 +1,4 @@
-import { AUTH_ATTEMPTS_WINDOW } from '../../../constants/tokenLifeTime.js';
+import { AUTH_ATTEMPTS_LIMIT, AUTH_ATTEMPTS_WINDOW } from '../../../constants/tokenLifeTime.js';
 import createRequestLimit from '../createRequestLimit.js';
 
 /**

@@ -4,6 +4,14 @@ import { DANGEROUS_QUERY_VALUES, DANGEROUS_SYMBOLS, DOUBLE_UNDERSCORE, sqlPatter
 import { MAX_STRING_LENGTH } from '../../constants/tokenLifeTime.js';
 import { RAW_FIELDS } from '../../constants/extensions.js';
 
+const colors = {
+  reset: "\x1b[0m",
+  red: "\x1b[31m",
+  yellow: "\x1b[33m",
+  cyan: "\x1b[36m",
+  magenta: "\x1b[35m"
+};
+
 /**
  * Validates whether a given object key name is safe for use.
  *
@@ -65,8 +73,8 @@ const truncateOrReject = str => {
  * const safe = sanitizeObject(input);
  * // => { username: "&lt;script&gt;alert('xss')&lt;/script&gt;", nested: { badKey: "DROP TABLE users;" } }
  */
-export const sanitizeObject = (obj, context = 'html', depth = 0, seen = new WeakMap(), suspicious = []) => {
-  if (depth > 10) {
+export const sanitizeObject = (obj, context = 'html', depth = 0, seen = new WeakMap(), suspicious = [], req=null) => {
+   if (depth > 10) {
     throw new Error('Object depth limit exceeded');
   }
   if (!obj || typeof obj !== 'object') return obj;
@@ -83,7 +91,7 @@ export const sanitizeObject = (obj, context = 'html', depth = 0, seen = new Weak
 
     const value = obj[key];
     if (value && typeof value === 'object') {
-      safeObject[key] = sanitizeObject(value, context, depth + 1, seen, suspicious);
+      safeObject[key] = sanitizeObject(value, context, depth + 1, seen, suspicious, req);
     } else if (typeof value === 'string') {
       if (sqlPattern.test(value)) {
         suspicious.push({ key, value, type: 'SQLi' });
@@ -103,7 +111,20 @@ export const sanitizeObject = (obj, context = 'html', depth = 0, seen = new Weak
   }
 
   if (depth === 0 && suspicious.length > 0) {
-    console.warn('Suspicious activity detected:', suspicious);
+    const logInfo = {
+      ip: req?.ip || 'unknown',
+      userAgent: req?.headers?.['user-agent'] || 'unknown',
+      url: req?.originalUrl || 'unknown',
+      method: req?.method || 'unknown',
+      userId: req?.user?.id || null,
+      timestamp: new Date().toISOString(),
+      suspicious
+    };
+    console.warn(
+  `${colors.red} Suspicious activity detected:${colors.reset}\n` +
+  `${colors.cyan}${JSON.stringify(logInfo, null, 2)}${colors.reset}`
+);
   }
+
   return safeObject;
 };

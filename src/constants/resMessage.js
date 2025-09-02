@@ -6,7 +6,9 @@ const responseMessage = Object.freeze({
     NOT_FOUND: 'User not found',
     UNAUTHORIZED: 'Not authorized',
     VALIDATE_INPUT: 'All fields are required',
-    EXIST: 'Email already in use'
+    EXIST: 'Email already in use',
+    INVALID: 'Invalid email or password',
+    LOGIN: 'Login successful'
   },
   PRODUCT: {
     CREATED: 'Product created successfully',
