@@ -1,5 +1,6 @@
 import checkBodyEmpty from "./checkBodyEmpty.js";
 import clientCheck from "./clientCheck.js";
+import secureInput from "./secureInput.js";
 import csrfHeaderCheck from "./security/csrfHeaderCheck.js";
 
 /**
@@ -18,4 +19,4 @@ export const originGuards = [csrfHeaderCheck, clientCheck];
  * Use for: auth flows, create/update resources, file uploads, anything sensitive.
  * POST/PUT/PATCH/DELETE when a body is expected
  */
-export const inputSanitizationGuards = [...originGuards, checkBodyEmpty];
+export const inputSanitizationGuards = [...originGuards, checkBodyEmpty, secureInput];
