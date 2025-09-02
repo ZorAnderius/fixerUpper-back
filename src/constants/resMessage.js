@@ -10,7 +10,8 @@ const responseMessage = Object.freeze({
     VALIDATE_INPUT: 'All fields are required',
     EXIST: 'Email already in use',
     INVALID: 'Invalid email or password',
-    LOGIN: 'Login successful'
+    LOGIN: 'Login successful',
+    CURRENT: 'Full info about current user retrived successfully.'
   },
   PRODUCT: {
     CREATED: 'Product created successfully',

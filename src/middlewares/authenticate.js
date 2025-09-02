@@ -43,6 +43,7 @@ const auth = async (req, res, next) => {
         email: user.email,
         firstName: user.firstName,
         lastName: user.lastName,
+        phoheNumber: user.phoheNumber,
         avatarUrl: user.avatarUrl,
         role: user.role,
       }

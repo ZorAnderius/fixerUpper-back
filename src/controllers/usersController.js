@@ -2,7 +2,7 @@ import responseMessage from "../constants/resMessage.js";
 import LoginUser from "../dto/users/login.js";
 import RegisterUser from "../dto/users/register.js"
 import { getRefreshToken } from "../services/refreshTokenServices.js";
-import { login, logout, register } from "../services/usersService.js";
+import { findUserById, login, logout, register } from "../services/usersService.js";
 import { setRefreshTokenCookie } from "../utils/setRefreshTokenCookie.js";
 
 export const registerController = async (req, res, next) => {
@@ -42,4 +42,13 @@ export const logoutController = async (req, res, next) => {
   const jti = req.jti;
   await logout({ userId, jti });
   res.status(204).send();
+}
+
+export const currentUserController = async (req, res, next) => {
+  const data = await findUserById(req.user.id);
+  res.json({
+    status: 200,
+    message: responseMessage.USER.CURRENT,
+    data
+  })
 }

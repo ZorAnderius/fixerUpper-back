@@ -9,6 +9,18 @@ export const findUser = async query => {
   return await User.findOne({ where: query });
 }
 
+export const findUserById = async id => {
+  const user = await User.findByPk(id);
+  return {
+    id: user.id,
+    email: user.email,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    phoneNumber: user.phoneNumber,
+    avatarUrl: user.avatar_url,
+  }
+}
+
 export const register = async ({ userData, ip, userAgent }) => {
   const { firstName, lastName, email, password, phoneNumber } = userData;
   if (!firstName || !lastName || !email || !password || !phoneNumber) throw createHttpError(400, responseMessage.USER.VALIDATE_INPUT);
