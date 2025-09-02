@@ -2,7 +2,7 @@ import responseMessage from "../constants/resMessage.js";
 import LoginUser from "../dto/users/login.js";
 import RegisterUser from "../dto/users/register.js"
 import { getRefreshToken } from "../services/refreshTokenServices.js";
-import { findUserById, login, logout, register } from "../services/usersService.js";
+import { findUserById, login, logout, register, updateAvatar } from "../services/usersService.js";
 import { setRefreshTokenCookie } from "../utils/setRefreshTokenCookie.js";
 
 export const registerController = async (req, res, next) => {
@@ -54,5 +54,11 @@ export const currentUserController = async (req, res, next) => {
 }
 
 export const updateAvatarController = async (req, res, next) => {
-
+  const { id } = req.user;
+  const data = await updateAvatar({ id, file: req.file, folderName: 'fixerUpperAvatars' });
+  res.json({
+    status: 200,
+    message: responseMessage.USER.UPDATE_AVATAR,
+    data,
+  });
 }

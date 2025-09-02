@@ -4,6 +4,7 @@ import responseMessage from "../constants/resMessage.js";
 import User from "../db/models/User.js";
 import { generateTokens } from '../utils/tokenServices.js';
 import { getRefreshToken } from './refreshTokenServices.js';
+import saveToCloudinary from '../utils/saveToClaudinary.js';
 
 export const findUser = async query => {
   return await User.findOne({ where: query });
@@ -17,7 +18,7 @@ export const findUserById = async id => {
     firstName: user.firstName,
     lastName: user.lastName,
     phoneNumber: user.phoneNumber,
-    avatarUrl: user.avatar_url,
+    avatar_url: user.avatar_url,
   }
 }
 
@@ -78,6 +79,18 @@ export const logout = async ({ userId, jti }) => {
 }
 
 
-export const updateAvatar = async ({newAvatar, userId}) => {
-  
+export const updateAvatar = async ({ id, file, folderName }) => {
+  if (!file) throw createHttpError(400, responseMessage.COMMON.FILE_MISSING);
+  const user = await findUser({id});
+  if (!user) throw createHttpError(401, responseMessage.USER.UNAUTHORIZED);
+  try {
+    const avatar_url = await saveToCloudinary(file, folderName);
+    await user.update({ avatar_url}, { returning: true });
+    return {
+      id: user.id,
+      avatarUrl: user.avatar_url,
+    };
+  } catch (error) {
+    throw createHttpError(500, responseMessage.USER.FAIL_UPDATE_AVATAR);
+  }
 }

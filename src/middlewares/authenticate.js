@@ -5,8 +5,6 @@ import { refreshTokenRotation } from "../services/refreshTokenServices.js";
 
 const auth = async (req, res, next) => {
   const { authorization } = req.headers;
-  console.log(authorization);
-  console.log(req.cookies);
   if (!authorization) return next(createHttpError(401, responseMessage.USER.HEADER_MISSING));
   const [bearer, token] = authorization.split(' ');
   if (bearer !== 'Bearer') return next(createHttpError(401, responseMessage.USER.INVALID_HEADER));
@@ -44,7 +42,7 @@ const auth = async (req, res, next) => {
         firstName: user.firstName,
         lastName: user.lastName,
         phoheNumber: user.phoheNumber,
-        avatarUrl: user.avatarUrl,
+        avatar_url: user.avatar_url,
         role: user.role,
       }
     } else {

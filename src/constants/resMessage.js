@@ -11,7 +11,9 @@ const responseMessage = Object.freeze({
     EXIST: 'Email already in use',
     INVALID: 'Invalid email or password',
     LOGIN: 'Login successful',
-    CURRENT: 'Full info about current user retrived successfully.'
+    CURRENT: 'Full info about current user retrived successfully.',
+    UPDATE_AVATAR: 'Avatar updated successfully',
+    FAIL_UPDATE_AVATAR: 'Failed to update avatar'
   },
   PRODUCT: {
     CREATED: 'Product created successfully',
@@ -57,6 +59,7 @@ const responseMessage = Object.freeze({
     SERVER_ERROR: 'Internal server error',
     CSRF: 'CSRF header missing',
     ROUTE: 'Route not found',
+    FILE_MISSING:  'File is required'
   }
 })
 
