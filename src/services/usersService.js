@@ -1,10 +1,12 @@
 import bcrypt from 'bcrypt';
-import createHttpError from "http-errors";
-import responseMessage from "../constants/resMessage.js";
-import User from "../db/models/User.js";
+import { randomBytes } from 'crypto';
 import { generateTokens } from '../utils/tokenServices.js';
 import { getRefreshToken } from './refreshTokenServices.js';
+import { validateCode } from '../utils/googleOAuth.js';
+import createHttpError from "http-errors";
+import responseMessage from "../constants/resMessage.js";
 import saveToCloudinary from '../utils/saveToClaudinary.js';
+import User from "../db/models/User.js";
 
 export const findUser = async query => {
   return await User.findOne({ where: query });
@@ -69,6 +71,43 @@ export const login = async ({ userData, ip, userAgent }) => {
     tokens
   }
 }
+
+export const authenticateWithGoogleOAuth = async ({ code, ip, userAgent }) => {
+  const authTicket = await validateCode(code);
+  const { payload } = authTicket;
+  if (!payload) throw createHttpError(401, 'Not authorized');
+  let user = await findUser({ email: payload.email });
+  if (!user) {
+    const pas = randomBytes(10);
+    const password = await bcrypt.hash(pas, 11);
+    user = await User.create({
+      email: payload.email,
+      password,
+      firstName: payload.given_name,
+      lastName: payload.family_name,
+      avatarUrl: payload.picture,
+    });
+  }
+  const tokens = await generateTokens({
+    id: user.id,
+    email: user.email,
+    ip,
+    userAgent,
+  });
+
+  return {
+    user: {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      avatarUrl: user.avatar_url,
+    },
+    tokens
+  };
+};
+
 
 export const logout = async ({ userId, jti }) => {
   const token = await getRefreshToken({ jti });

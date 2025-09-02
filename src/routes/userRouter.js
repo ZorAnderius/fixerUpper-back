@@ -6,16 +6,25 @@ import userRegisterSchema from "../schemas/userSchema/registerSchema.js";
 import registerLimit from "../middlewares/requestLimit/authLimit/registerLimit.js";
 import authLimit from "../middlewares/requestLimit/authLimit/authLimit.js";
 import userLoginSchema from "../schemas/userSchema/loginSchema.js";
-import { currentUserController, loginControllers, logoutController, registerController, updateAvatarController } from "../controllers/usersController.js";
+import { authenticateWithGoogleOAuthController, currentUserController, loginControllers, logoutController, registerController, updateAvatarController, userGoogleOAuthController } from "../controllers/usersController.js";
 import { inputSanitizationGuards, originGuards } from "../middlewares/middlewareSet.js";
 import apiLimit from "../middlewares/requestLimit/apiRequest.js";
 import upload from "../middlewares/upload.js";
+import authWithGoogleOAuthSchema from "../schemas/userSchema/authWithGoogleSchema.js";
 
 const userRouter = express.Router();
 
 userRouter.post('/register', [...inputSanitizationGuards, validateBody(userRegisterSchema), ...registerLimit], ctrlWrapper(registerController))
 
 userRouter.post('/login', [...inputSanitizationGuards, validateBody(userLoginSchema), ...authLimit], ctrlWrapper(loginControllers));
+
+userRouter.get('/request-google-oauth', [...originGuards], ctrlWrapper(userGoogleOAuthController));
+
+userRouter.post(
+  '/confirm-oauth',
+  [...inputSanitizationGuards, validateBody(authWithGoogleOAuthSchema), ...authLimit],
+  ctrlWrapper(authenticateWithGoogleOAuthController)
+);
 
 userRouter.post('/logout', [...originGuards, auth, ...apiLimit], ctrlWrapper(logoutController));
 

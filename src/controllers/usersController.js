@@ -1,8 +1,10 @@
 import responseMessage from "../constants/resMessage.js";
+import GoogleOAuthDTO from "../dto/users/googleOAuthDTO.js";
 import LoginUser from "../dto/users/login.js";
 import RegisterUser from "../dto/users/register.js"
 import { getRefreshToken } from "../services/refreshTokenServices.js";
-import { findUserById, login, logout, register, updateAvatar } from "../services/usersService.js";
+import { authenticateWithGoogleOAuth, findUserById, login, logout, register, updateAvatar } from "../services/usersService.js";
+import { generateAuthUrl } from "../utils/googleOAuth.js";
 import { setRefreshTokenCookie } from "../utils/setRefreshTokenCookie.js";
 
 export const registerController = async (req, res, next) => {
@@ -36,6 +38,31 @@ export const loginControllers = async (req, res, next) => {
     }
   })
 }
+
+export const userGoogleOAuthController = (req, res) => {
+  const url = generateAuthUrl();
+  res.json({
+    message: responseMessage.USER.SUCCESS_REQUEST_OAUTH,
+    data: { url },
+  });
+};
+
+
+export const authenticateWithGoogleOAuthController = async (req, res, next) => {
+  const { code } = new GoogleOAuthDTO(req.body);
+  const ip = req.ip;
+  const userAgent = req.get('User-Agent');
+  const { user, tokens } = await authenticateWithGoogleOAuth({ code, ip, userAgent });
+  setRefreshTokenCookie(res, tokens.refreshToken);
+  res.json({
+    status: 200,
+    message: responseMessage.USER.SUCCESS_OAUTH,
+    data: {
+      user,
+      accessToken: tokens.accessToken,
+    },
+  });
+};
 
 export const logoutController = async (req, res, next) => {
   const userId = req.user.id;

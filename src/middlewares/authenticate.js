@@ -18,7 +18,7 @@ const auth = async (req, res, next) => {
       const tokenData = await verifyRefreshToken(refreshToken);
       user = tokenData.user;
       accessToken = generateAccessToken(tokenData.payload.sub, tokenData.payload.email);
-      refreshTokenRotation(token.payload.jti);
+      refreshTokenRotation(tokenData.payload.jti);
       payload = tokenData.payload;
       req.jti = tokenData.payload.jti;
     } else {

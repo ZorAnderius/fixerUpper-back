@@ -13,7 +13,9 @@ const responseMessage = Object.freeze({
     LOGIN: 'Login successful',
     CURRENT: 'Full info about current user retrived successfully.',
     UPDATE_AVATAR: 'Avatar updated successfully',
-    FAIL_UPDATE_AVATAR: 'Failed to update avatar'
+    FAIL_UPDATE_AVATAR: 'Failed to update avatar',
+    SUCCESS_OAUTH: 'Google OAuth authentication successful',
+    SUCCESS_REQUEST_OAUTH: 'Successfully requested OAuth URL'
   },
   PRODUCT: {
     CREATED: 'Product created successfully',
@@ -59,7 +61,7 @@ const responseMessage = Object.freeze({
     SERVER_ERROR: 'Internal server error',
     CSRF: 'CSRF header missing',
     ROUTE: 'Route not found',
-    FILE_MISSING:  'File is required'
+    FILE_MISSING: 'File is required'
   }
 })
 
