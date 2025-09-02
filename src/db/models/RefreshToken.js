@@ -5,6 +5,7 @@ class RefreshToken extends Model {
     return RefreshToken.init(
       {
         id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+        user_id: { type: DataTypes.UUID, allowNull: false },
         jti: { type: DataTypes.STRING, allowNull: false, unique: true },
         token_hash: { type: DataTypes.STRING, allowNull: false },
         revoked: { type: DataTypes.BOOLEAN, defaultValue: false },
@@ -12,15 +13,14 @@ class RefreshToken extends Model {
         expires_at: { type: DataTypes.DATE, allowNull: false },
         ip: { type: DataTypes.STRING, allowNull: true },
         user_agent: { type: DataTypes.STRING, allowNull: true },
-        user_id: { type: DataTypes.UUID, allowNull: false },
       },
       {
         sequelize,
         modelName: 'RefreshToken',
         tableName: 'refreshTokens',
-        timestamps: false,
-        underscored: true
-      })
+        timestamps: true,
+        underscored: true,
+      });
   }
 
   static associate(model) {

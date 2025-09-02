@@ -9,6 +9,8 @@ const ENV_VARS = Object.freeze({
     DB_DATABASE: 'DB_DATABASE',
     DB_HOST: 'DB_HOST',
   },
+  JWT_ACCESS_SECRET: 'JWT_ACCESS_SECRET',
+  JWT_REFRESH_SECRET: 'JWT_REFRESH_SECRET',
 })
 
 export default ENV_VARS;
