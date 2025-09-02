@@ -52,3 +52,7 @@ export const currentUserController = async (req, res, next) => {
     data
   })
 }
+
+export const updateAvatarController = async (req, res, next) => {
+
+}

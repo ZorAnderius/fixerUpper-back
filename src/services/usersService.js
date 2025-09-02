@@ -76,3 +76,8 @@ export const logout = async ({ userId, jti }) => {
   token.revoked = true;
   await token.save();
 }
+
+
+export const updateAvatar = async ({newAvatar, userId}) => {
+  
+}
