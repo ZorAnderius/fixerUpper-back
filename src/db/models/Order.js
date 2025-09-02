@@ -5,7 +5,7 @@ class Order extends Model {
     return Order.init({
       id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
       oder_number: { type: DataTypes.STRING, allowNull: false },
-      total_price: { type: DataTypes.DECIMAL(12, 2), allowNull: false, validate: { isDecimal: true, min: 0 } },
+      total_price: { type: DataTypes.DECIMAL(12, 2), allowNull: false},
       user_id: { type: DataTypes.UUID, allowNull: false }
     },
       {
