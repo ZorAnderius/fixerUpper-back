@@ -1,7 +1,8 @@
 import responseMessage from "../constants/resMessage.js";
 import LoginUser from "../dto/users/login.js";
 import RegisterUser from "../dto/users/register.js"
-import { login, register } from "../services/usersService.js";
+import { getRefreshToken } from "../services/refreshTokenServices.js";
+import { login, logout, register } from "../services/usersService.js";
 import { setRefreshTokenCookie } from "../utils/setRefreshTokenCookie.js";
 
 export const registerController = async (req, res, next) => {
@@ -34,4 +35,11 @@ export const loginControllers = async (req, res, next) => {
       accessToken: tokens.accessToken
     }
   })
+}
+
+export const logoutController = async (req, res, next) => {
+  const userId = req.user.id;
+  const jti = req.jti;
+  await logout({ userId, jti });
+  res.status(204).send();
 }

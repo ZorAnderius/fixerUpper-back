@@ -135,15 +135,16 @@ export const verifyRefreshToken = async (refreshToken, query = {}) => {
   try {
     const decoded = jwt.verify(refreshToken, refreshSecret);
     const token = await getRefreshTokenAndUser({ jti: decoded.jti, user_id: decoded.sub, ...query });
+
     if (!token) throw createHttpError(401, 'Token not found');
     if (token.revoked) throw createHttpError(401, 'Refresh token has been revoked');
     if (new Date() > token.expires_at) throw createHttpError(401, 'Refresh token has expired');
 
     const isMatch = await bcrypt.compare(refreshToken, token.token_hash);
     if (!isMatch) throw createHttpError(401, 'Invalid refresh token');
-    return { payload: decoded, user: token.User, revoked: token.revoked };
+    return { payload: decoded, user: token.user, revoked: token.revoked };
   } catch (error) {
-    throw createHttpError(401, 'Invalid refresh token');
+    throw createHttpError(401, error.message);
   }
 };
 

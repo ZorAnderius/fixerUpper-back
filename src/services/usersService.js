@@ -3,6 +3,7 @@ import createHttpError from "http-errors";
 import responseMessage from "../constants/resMessage.js";
 import User from "../db/models/User.js";
 import { generateTokens } from '../utils/tokenServices.js';
+import { getRefreshToken } from './refreshTokenServices.js';
 
 export const findUser = async query => {
   return await User.findOne({ where: query });
@@ -54,4 +55,12 @@ export const login = async ({ userData, ip, userAgent }) => {
     },
     tokens
   }
+}
+
+export const logout = async ({ userId, jti }) => {
+  const token = await getRefreshToken({ jti });
+  if (!token) throw createHttpError(404, responseMessage.TOKEN.NOT_FOUND);
+  if (token.user_id !== userId) throw createHttpError(403, responseMessage.TOKEN.FORBIDDEN);
+  token.revoked = true;
+  await token.save();
 }

@@ -1,9 +1,11 @@
 const responseMessage = Object.freeze({
   USER: {
-    CREATED: 'User has been successfully created',
+    CREATED: 'User has been successfully register',
     UPDATED: 'User profile updated successfully',
     DELETED: 'User account deleted',
     NOT_FOUND: 'User not found',
+    HEADER_MISSING: 'Authorization header is missing',
+    INVALID_HEADER: 'Invalid authorization header',
     UNAUTHORIZED: 'Not authorized',
     VALIDATE_INPUT: 'All fields are required',
     EXIST: 'Email already in use',
@@ -22,6 +24,8 @@ const responseMessage = Object.freeze({
     REFRESHED: 'Token refreshed successfully',
     EXPIRED: 'Token has expired',
     INVALID: 'Refresh token is missing or invalid',
+    NOT_FOUND: 'Refresh token not found',
+    FORBIDDEN: 'Refresh token is forbidden'
   },
   ORDER: {
     CREATED: 'Order placed successfully',
