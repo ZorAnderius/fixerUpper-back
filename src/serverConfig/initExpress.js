@@ -6,6 +6,7 @@ import morgan from "./config/morganConfig.js";
 import corsOptions from "./config/corsConfig.js";
 import helmetOption from "./config/helmetConfig.js";
 import csrfHeaderCheck from "./config/csrfHeaderCheck.js";
+import sanitizeRequest from "../middlewares/security/sanitizeRequest.js";
 
 const app = express();
 
@@ -19,5 +20,7 @@ app.use(express.json({
 }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(express.static('public'));
+
+app.use(sanitizeRequest());
 
 export default app;

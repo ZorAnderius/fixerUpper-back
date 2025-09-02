@@ -22,7 +22,6 @@ import { Op } from 'sequelize';
  * @throws {Error} If database insertion fails.
  */
 export const createRefreshToken = async ({ user_id, jti, expires_at, ip, user_agent, token_hash }, options = {}) => {
-  console.log(user_id, jti, expires_at, ip, user_agent, token_hash );
   return await RefreshToken.create(
     {
       user_id,
@@ -147,8 +146,8 @@ export const refreshTokenRotation = async jti => {
   if (tokenAges > oneDayMs) {
     const newToken = await generateRefreshToken({
       id: token.user_id,
-      ip: token.ip, 
-      userAgent: token.user_agent, 
+      ip: token.ip,
+      userAgent: token.user_agent,
     });
     return newToken;
   }

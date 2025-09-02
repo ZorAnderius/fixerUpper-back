@@ -1,8 +1,8 @@
 import createHttpError from 'http-errors';
-import { DANGEROUS_QUERY_VALUES, DANGEROUS_SYMBOLS, DOUBLE_UNDERSCORE } from '../../constants/dangerousValues';
-import { MAX_STRING_LENGTH } from '../../constants/tokenLifeTime';
-import { RAW_FIELDS } from '../../constants/extensions';
-import escapeByContext from './escape';
+import escapeByContext from './escape.js';
+import { DANGEROUS_QUERY_VALUES, DANGEROUS_SYMBOLS, DOUBLE_UNDERSCORE, sqlPattern, xssPattern } from '../../constants/dangerousValues.js';
+import { MAX_STRING_LENGTH } from '../../constants/tokenLifeTime.js';
+import { RAW_FIELDS } from '../../constants/extensions.js';
 
 /**
  * Validates whether a given object key name is safe for use.

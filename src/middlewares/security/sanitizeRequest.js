@@ -1,4 +1,5 @@
-import { sanitizeObject } from './sanitizeObjects.js';
+import { sanitizeObject } from "./sanitizeObject.js";
+
 
 /**
  * Express middleware that sanitizes incoming request data.

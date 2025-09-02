@@ -22,8 +22,7 @@ const refreshSecret = env(ENV_VARS.JWT_REFRESH_SECRET);
  * @returns {string} Signed JWT access token.
  */
 export const generateAccessToken = (id, email) => {
-
-  const newToken = jwt.sign(
+  return jwt.sign(
     {
       sub: id,
       email: email,
@@ -31,8 +30,6 @@ export const generateAccessToken = (id, email) => {
     accessSecret,
     { expiresIn: MAX_AGE_ACCESS_TOKENS }
   );
-  console.log(newToken);
-  return newToken;
 };
 
 /**
