@@ -71,6 +71,10 @@ const responseMessage = Object.freeze({
     ROUTE: 'Route not found',
     FILE_MISSING: 'File is required',
     BAD_REQUEST: 'Bad request',
+  },
+  OTHER: {
+    CATEGORY_RETRIEVED: 'Categories retrieved successfully',
+    PRODUCT_STATUS_RETRIEVED: 'Product statuses retrieved successfully',
   }
 })
 
