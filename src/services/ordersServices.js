@@ -26,6 +26,39 @@ export const generateOrderNumber = async ({ transaction } = {}) => {
   return orderNumber;
 };
 
+export const getOrderById = async (id) => {
+  const order = await Order.findOne({
+    where: { id },
+    attributes: { exclude: ['user_id', 'updatedAt'] },
+    include: [
+      {
+        model: User,
+        as: 'user',
+        attributes: ['id', 'firstName', 'lastName']
+      },
+      {
+        model: OrderItem,
+        as: 'orderItems',
+        attributes: { exclude: ['order_id', 'product_id'] },
+        include: [
+          {
+            model: Product,
+            as: 'products',
+            attributes: ['id', 'title', 'image_url'],
+            include: [
+              { model: ProductStatus, as: 'status', attributes: ['id', 'status'] },
+              { model: Category, as: 'category', attributes: ['id', 'name'] }
+            ]
+          },
+        ]
+      },
+    ],
+    order: [['createdAt', 'DESC']],
+  });
+  if (!order) throw createHttpError(404, responseMessage.ORDER.NOT_FOUND);
+  return order;
+};
+
 export const getAllOrders = async ({ user_id, pagination: { page = 1, limit = 10 }, filter = {} }) => {
   const offset = (page - 1) * limit;
   const { count, rows: orders } = await Order.findAndCountAll({
@@ -54,6 +87,7 @@ export const getAllOrders = async ({ user_id, pagination: { page = 1, limit = 10
         ]
       },
     ],
+    order: [['createdAt', 'DESC']],
     offset,
     limit,
   });
