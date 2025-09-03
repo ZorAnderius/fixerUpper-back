@@ -5,7 +5,7 @@ class CartItem extends Model {
     return CartItem.init({
       id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
       quantity: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 1 },
-      card_id: { type: DataTypes.UUID, allowNull: false },
+      cart_id: { type: DataTypes.UUID, allowNull: true },
       product_id: { type: DataTypes.UUID, allowNull: false }
     },
       {

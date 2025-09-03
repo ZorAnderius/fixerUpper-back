@@ -66,7 +66,8 @@ const responseMessage = Object.freeze({
     SERVER_ERROR: 'Internal server error',
     CSRF: 'CSRF header missing',
     ROUTE: 'Route not found',
-    FILE_MISSING: 'File is required'
+    FILE_MISSING: 'File is required',
+    BAD_REQUEST: 'Bad request',
   }
 })
 

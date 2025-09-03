@@ -1,0 +1,105 @@
+import createHttpError from "http-errors";
+import responseMessage from "../constants/resMessage.js";
+import sequelize from "../db/sequelize.js";
+import updateObjects from "../utils/updateObjects.js";
+import { getProductById } from "./productServices.js";
+import Cart from "../db/models/Cart.js";
+import CartItem from "../db/models/CartItem.js";
+import ProductStatus from "../db/models/ProductStatus.js";
+import Category from "../db/models/Category.js";
+import Product from "../db/models/Product.js";
+
+export const findCart = async (query, { transaction } = {}) => {
+  return await Cart.findOne({
+    where: query,
+    transaction,
+  });
+};
+
+export const findCartItem = async (query, { transaction } = {}, option = {}) => {
+  return await CartItem.findOne({
+    where: query,
+    ...option,
+    transaction,
+  });
+};
+
+export const getCartItems = async (query, { transaction } = {}) => {
+  const cart = await Cart.findOne({
+    where: query,
+    include: [
+      {
+        model: CartItem,
+        as: 'cartItems',
+        attributes: ['id', 'quantity'],
+        include: [
+          {
+            model: Product,
+            as: 'products',
+            attributes: { exclude: ['category_id', 'status_id'] },
+            include: [
+              { model: ProductStatus, as: 'status', attributes: ['status'] },
+
+              { model: Category, as: 'category', attributes: ['name'] },
+            ],
+          },
+        ],
+        separate: true,
+        order: [['createdAt', 'ASC']],
+      },
+    ],
+    transaction,
+  });
+  if (!cart) throw createHttpError(404, responseMessage.CART.NOT_FOUND);
+  return cart;
+};
+
+export const createCartItem = async ({ user_id, data }) => {
+  return await sequelize.transaction(async t => {
+    const { product_id: id, quantity } = updateObjects(data);
+    if (!id || !quantity) throw createHttpError('400', responseMessage.COMMON.BAD_REQUEST);
+    const currentProduct = await getProductById(id, { transaction: t });
+    if (!currentProduct) throw createHttpError(404, responseMessage.PRODUCT.NOT_FOUND);
+
+    let cart = await findCart({ user_id }, { transaction: t });
+    if (!cart) {
+      cart = await Cart.create({ user_id }, { transaction: t });
+    }
+
+    const cartItem = await findCartItem({ cart_id: cart.id, product_id: id }, { transaction: t });
+    let newQuantity;
+    let message = '';
+    if (cartItem) {
+      if (cartItem.quantity === currentProduct.quantity) {
+        newQuantity = cartItem.quantity;
+        message = `You already have the maximum available quantity (${currentProduct.quantity}) of ${currentProduct.name} in your cart.`;
+      } else {
+        newQuantity = Math.min(cartItem.quantity + quantity, currentProduct.quantity);
+        cartItem.quantity = newQuantity;
+        await cartItem.save({ transaction: t });
+      }
+    } else {
+      newQuantity = Math.min(quantity, currentProduct.quantity);
+      await CartItem.create(
+        {
+          cart_id: cart.id,
+          product_id: id,
+          quantity: newQuantity,
+        },
+        { transaction: t }
+      );
+    }
+
+    if (!message) {
+      message =
+        newQuantity < quantity
+          ? `We added ${newQuantity} of ${currentProduct.name} instead of ${quantity}, because ${quantity - newQuantity} items are out of stock.`
+          : responseMessage.CART_ITEM.ADDED;
+    }
+
+    return {
+      cart: await getCartItems({ user_id }, { transaction: t }),
+      message,
+    };
+  });
+};
