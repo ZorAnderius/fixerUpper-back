@@ -98,3 +98,10 @@ export const updateProduct = async ({ id, data, file = null, folderName = PRODUC
     return updatedProduct;
   });
 };
+
+export const deleteProduct = async (id) => {
+  const product = await getProductById(id);
+  if (!product) throw createHttpError(404, responseMessage.PRODUCT.NOT_FOUND);
+  await product.destroy();
+  return product;
+};

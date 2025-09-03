@@ -1,7 +1,7 @@
 import { PRODUCT_IMAGE_FOLDER } from "../constants/cloudinary.js";
 import responseMessage from "../constants/resMessage.js";
 import ProductDTO from "../dto/product/ProductDTO.js";
-import { createNewProduct, getAllProducts, getProductById, updateProduct } from "../services/productServices.js";
+import { createNewProduct, deleteProduct, getAllProducts, getProductById, updateProduct } from "../services/productServices.js";
 import parseFilterQuery from "../utils/pagination/parseFilterQuery.js";
 import parsePaginationQuery from "../utils/pagination/parsePaginationQuery.js";
 
@@ -50,5 +50,15 @@ export const updateProductController = async (req, res, next) => {
     status: 200,
     message: responseMessage.PRODUCT.UPDATED,
     data,
+  });
+};
+
+export const deleteProductController = async (req, res, next) => {
+  const { id } = req.params;
+  if (!id) throw createHttpError(400, responseMessage.PRODUCT.VALIDATE_ID);
+  await deleteProduct(id);
+  res.json({
+    status: 200,
+    message: responseMessage.PRODUCT.DELETED,
   });
 };

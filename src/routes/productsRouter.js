@@ -8,7 +8,7 @@ import createProductSchema from "../schemas/productsSchema/createProductSchema.j
 import updateProductSchema from "../schemas/productsSchema/updateProductSchema.js";
 import upload from "../middlewares/upload.js";
 import { inputSanitizationGuards, originGuards } from "../middlewares/middlewareSet.js";
-import { createProductController, getAllProductsController, getProductByIdController, updateProductController } from "../controllers/productsController.js";
+import { createProductController, deleteProductController, getAllProductsController, getProductByIdController, updateProductController } from "../controllers/productsController.js";
 
 const productsRouter = express.Router();
 
@@ -36,5 +36,11 @@ productsRouter.patch('/:id/edit', [
   validateBody(updateProductSchema),
   ...apiLimit],
   ctrlWrapper(updateProductController));
+
+  productsRouter.delete('/:id/delete', [
+    ...originGuards,
+    secureInput,
+    ...apiLimit],
+    ctrlWrapper(deleteProductController));
 
 export default productsRouter;
