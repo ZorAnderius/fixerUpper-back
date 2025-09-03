@@ -26,7 +26,8 @@ const responseMessage = Object.freeze({
     OUT_OF_STOCK: 'Product is out of stock',
     PAGINATION: 'Page is out of range',
     EXIST: 'Product already exists',
-    FAILED_SAVE_IMAGE: 'Failed to save product image'
+    FAILED_SAVE_IMAGE: 'Failed to save product image',
+    VALIDATE_ID: 'Invalid product ID',
   },
   TOKEN: {
     CREATED: 'Token generated successfully',

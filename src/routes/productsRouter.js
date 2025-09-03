@@ -7,11 +7,18 @@ import validateBody from "../utils/validateBody.js";
 import createProductSchema from "../schemas/productsSchema/createProductSchema.js";
 import upload from "../middlewares/upload.js";
 import { inputSanitizationGuards, originGuards } from "../middlewares/middlewareSet.js";
-import { createProductController, getAllProductsController } from "../controllers/productsController.js";
+import { createProductController, getAllProductsController, getProductByIdController } from "../controllers/productsController.js";
 
 const productsRouter = express.Router();
 
 productsRouter.get('/', [...originGuards, secureInput, ...apiLimit], ctrlWrapper(getAllProductsController));
+
+
+productsRouter.get('/:id', [
+  ...originGuards,
+   secureInput, 
+   ...apiLimit], 
+   ctrlWrapper(getProductByIdController));
 
 productsRouter.use(auth);
 
