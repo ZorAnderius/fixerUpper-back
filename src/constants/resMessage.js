@@ -56,6 +56,7 @@ const responseMessage = Object.freeze({
     REMOVED: 'Item removed from cart',
     NOT_FOUND: 'Cart item not found',
     OUT_OF_STOCK: 'This item is out of stock',
+    RETRIEVED: 'Cart items retrieved successfully',
   },
   COMMON: {
     SUCCESS: 'Operation completed successfully',
