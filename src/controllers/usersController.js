@@ -1,3 +1,4 @@
+import { USER_AVATAR_FOLDER } from "../constants/cloudinary.js";
 import responseMessage from "../constants/resMessage.js";
 import GoogleOAuthDTO from "../dto/users/googleOAuthDTO.js";
 import LoginUser from "../dto/users/login.js";
@@ -82,7 +83,7 @@ export const currentUserController = async (req, res, next) => {
 
 export const updateAvatarController = async (req, res, next) => {
   const { id } = req.user;
-  const data = await updateAvatar({ id, file: req.file, folderName: 'fixerUpperAvatars' });
+  const data = await updateAvatar({ id, file: req.file, folderName: USER_AVATAR_FOLDER });
   res.json({
     status: 200,
     message: responseMessage.USER.UPDATE_AVATAR,
