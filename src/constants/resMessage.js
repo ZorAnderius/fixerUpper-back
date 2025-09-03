@@ -18,11 +18,13 @@ const responseMessage = Object.freeze({
     SUCCESS_REQUEST_OAUTH: 'Successfully requested OAuth URL'
   },
   PRODUCT: {
+    RETRIEVED: 'Products retrieved successfully',
     CREATED: 'Product created successfully',
     UPDATED: 'Product updated successfully',
     DELETED: 'Product removed successfully',
     NOT_FOUND: 'Product not found',
     OUT_OF_STOCK: 'Product is out of stock',
+    PAGINATION: 'Page is out of range'
   },
   TOKEN: {
     CREATED: 'Token generated successfully',
