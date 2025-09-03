@@ -42,6 +42,7 @@ const responseMessage = Object.freeze({
     UPDATED: 'Order updated successfully',
     CANCELED: 'Order canceled',
     NOT_FOUND: 'Order not found',
+    FOUNDED: 'Order founded',
   },
   CART: {
     CREATED: 'Cart created successfully',
