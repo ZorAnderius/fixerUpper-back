@@ -24,7 +24,9 @@ const responseMessage = Object.freeze({
     DELETED: 'Product removed successfully',
     NOT_FOUND: 'Product not found',
     OUT_OF_STOCK: 'Product is out of stock',
-    PAGINATION: 'Page is out of range'
+    PAGINATION: 'Page is out of range',
+    EXIST: 'Product already exists',
+    FAILED_SAVE_IMAGE: 'Failed to save product image'
   },
   TOKEN: {
     CREATED: 'Token generated successfully',

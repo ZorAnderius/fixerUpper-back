@@ -1,12 +1,25 @@
 import express from "express";
 import ctrlWrapper from "../utils/ctrlWrapper.js";
 import apiLimit from "../middlewares/requestLimit/apiRequest.js";
-import { originGuards } from "../middlewares/middlewareSet.js";
-import { getAllProducts } from "../services/productServices.js";
 import secureInput from "../middlewares/secureInput.js";
+import auth from "../middlewares/authenticate.js";
+import validateBody from "../utils/validateBody.js";
+import createProductSchema from "../schemas/productsSchema/createProductSchema.js";
+import upload from "../middlewares/upload.js";
+import { inputSanitizationGuards, originGuards } from "../middlewares/middlewareSet.js";
+import { createProductController, getAllProductsController } from "../controllers/productsController.js";
 
 const productsRouter = express.Router();
 
-productsRouter.get('/', [...originGuards, secureInput, ...apiLimit], ctrlWrapper(getAllProducts));
+productsRouter.get('/', [...originGuards, secureInput, ...apiLimit], ctrlWrapper(getAllProductsController));
+
+productsRouter.use(auth);
+
+productsRouter.post('/', [
+  upload.single('product_image'),
+  ...inputSanitizationGuards, 
+  validateBody(createProductSchema), 
+  ...apiLimit],
+   ctrlWrapper(createProductController));
 
 export default productsRouter;
