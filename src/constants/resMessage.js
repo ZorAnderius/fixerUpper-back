@@ -49,6 +49,7 @@ const responseMessage = Object.freeze({
     DELETED: 'Cart deleted',
     NOT_FOUND: 'Cart not found',
     EMPTY: 'Cart is empty',
+    INVALID_TOTAL: 'Invalid cart total',
   },
   CART_ITEM: {
     ADDED: 'Item added to cart',

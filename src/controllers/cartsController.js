@@ -1,7 +1,7 @@
 import responseMessage from "../constants/resMessage.js";
 import CartItemDTO from "../dto/cart/CartItemDTO.js";
 import UpdateCartItemDTO from "../dto/cart/UpdateCartItemDTO.js";
-import { createCartItem, getCartItems, updateCart } from "../services/cartsService.js";
+import { checkoutCart, createCartItem, getCartItems, updateCart } from "../services/cartsService.js";
 
 export const createCartItemController = async (req, res, next) => {
   const user_id = req.user.id;
@@ -33,5 +33,17 @@ export const updateCartController = async (req, res, next) => {
     status: 200,
     message,
     data: cart,
+  });
+};
+
+
+export const checkoutCartController = async (req, res, next) => {
+  const user_id = req.user.id;
+  const id = req.params.id;
+  const data = await checkoutCart({ user_id, id });
+  res.status(201).json({
+    status: 201,
+    message: responseMessage.ORDER.CREATED,
+    data,
   });
 };

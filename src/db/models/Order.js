@@ -4,7 +4,7 @@ class Order extends Model {
   static initModel(sequelize) {
     return Order.init({
       id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-      oder_number: { type: DataTypes.STRING, allowNull: false },
+      order_number: { type: DataTypes.STRING, allowNull: false },
       total_price: { type: DataTypes.DECIMAL(12, 2), allowNull: false},
       user_id: { type: DataTypes.UUID, allowNull: false }
     },

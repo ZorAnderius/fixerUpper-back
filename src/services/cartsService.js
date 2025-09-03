@@ -8,6 +8,9 @@ import CartItem from "../db/models/CartItem.js";
 import ProductStatus from "../db/models/ProductStatus.js";
 import Category from "../db/models/Category.js";
 import Product from "../db/models/Product.js";
+import Order from "../db/models/Order.js";
+import OrderItem from "../db/models/OrderItem.js";
+import { generateOrderNumber } from "./ordersServices.js";
 
 export const findCart = async (query, { transaction } = {}) => {
   return await Cart.findOne({
@@ -155,5 +158,58 @@ export const updateCart = async ({ user_id, id, quantity }) => {
       cart: await getCartItems({ user_id }, { transaction: t }),
       message,
     };
+  });
+};
+
+export const checkoutCart = async ({ user_id, id }) => {
+  return sequelize.transaction(async t => {
+    const cart = await findCart({ id, user_id }, { transaction: t });
+    if (!cart) throw createHttpError(404, 'Cart not found');
+    const cartItems = await CartItem.findAll({
+      where: { cart_id: id },
+      include: [{ model: Product, as: 'products', attributes: ['id', 'quantity', 'price'] }],
+      transaction: t,
+    });
+
+    if (!cartItems || cartItems.length === 0) throw createHttpError(404, 'No items in the cart');
+    const orderNumber = await generateOrderNumber({ transaction: t });
+    const order = await Order.create(
+      {
+        order_number: orderNumber,
+        user_id,
+        total_price: 0,
+      },
+      { transaction: t }
+    );
+
+    const orderItemData = [];
+    let totalPrice = 0;
+    for (const item of cartItems) {
+      const product = item.products;
+      const newProductQuantity = Math.max(0, product.quantity - item.quantity);
+      await item.products.update(
+        {
+          quantity: newProductQuantity,
+        },
+        { transaction: t }
+      );
+
+      const totalPriceByItem = item.quantity * product.price;
+      totalPrice += totalPriceByItem;
+
+      orderItemData.push({
+        order_id: order.id,
+        product_id: item.products.id,
+        quantity: item.quantity,
+        price: totalPriceByItem,
+      });
+    }
+    if (totalPrice <= 0) throw createHttpError(400, 'Invalid cart total.');
+    await order.update({ total_price: totalPrice }, { transaction: t });
+
+    await OrderItem.bulkCreate(orderItemData, { transaction: t });
+
+    await cart.destroy({ transaction: t });
+    return { orderNumber, totalPrice };
   });
 };
