@@ -18,7 +18,7 @@ class CartItem extends Model {
   }
 
   static associate(model) {
-    CartItem.belongsTo(model.Cart, {foreignKey: 'card_id', onDelete: 'CASCADE', as: 'cart'});
+    CartItem.belongsTo(model.Cart, {foreignKey: 'cart_id', onDelete: 'CASCADE', as: 'cart'});
     CartItem.belongsTo(model.Product, {foreignKey: 'product_id', as: 'products'});
   }
 }

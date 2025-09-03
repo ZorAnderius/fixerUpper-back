@@ -103,3 +103,57 @@ export const createCartItem = async ({ user_id, data }) => {
     };
   });
 };
+
+
+
+export const updateCart = async ({ user_id, id, quantity }) => {
+  return await sequelize.transaction(async t => {
+    const cartItem = await findCartItem(
+      { id },
+      { transaction: t },
+      {
+        include: [
+          { model: Cart, as: 'cart', where: { user_id } },
+          {
+            model: Product,
+            as: 'products',
+            attributes: { exclude: ['category_id', 'status_id'] },
+            include: [
+              { model: ProductStatus, as: 'status', attributes: ['status'] },
+
+              { model: Category, as: 'category', attributes: ['name'] },
+            ],
+          },
+        ],
+      },
+    );
+
+    if (!cartItem) throw createHttpError(404, responseMessage.CART_ITEM.NOT_FOUND);
+
+    const currentProduct = cartItem.products;
+    if (!currentProduct) throw createHttpError(404, responseMessage.PRODUCT.NOT_FOUND);
+
+    const requeiredQuantity = cartItem.quantity + quantity;
+    let newQuantity = requeiredQuantity;
+    if (newQuantity < 0) newQuantity = 0;
+    if (newQuantity > currentProduct.quantity) newQuantity = currentProduct.quantity;
+
+    let message = '';
+    if (newQuantity === 0) {
+      await cartItem.destroy({ transaction: t });
+      message = `Removed ${currentProduct.name} from cart.`;
+    } else {
+      await cartItem.update({ quantity: newQuantity }, { transaction: t });
+      message =
+        newQuantity < requeiredQuantity
+          ? `We set ${newQuantity} of ${currentProduct.name} instead of ${quantity}, because ${quantity - newQuantity} items are out of stock.`
+          : quantity > 0
+          ? 'Number of items was increased.'
+          : 'Number of items was decreased.';
+    }
+    return {
+      cart: await getCartItems({ user_id }, { transaction: t }),
+      message,
+    };
+  });
+};
