@@ -4,7 +4,7 @@ import GoogleOAuthDTO from "../dto/users/googleOAuthDTO.js";
 import LoginUser from "../dto/users/login.js";
 import RegisterUser from "../dto/users/register.js"
 import { getRefreshToken } from "../services/refreshTokenServices.js";
-import { authenticateWithGoogleOAuth, findUserById, login, logout, register, updateAvatar } from "../services/usersService.js";
+import { authenticateWithGoogleOAuth, findUserById, login, logout, refreshTokens, register, updateAvatar } from "../services/usersService.js";
 import { generateAuthUrl } from "../utils/googleOAuth.js";
 import { setRefreshTokenCookie } from "../utils/setRefreshTokenCookie.js";
 
@@ -90,3 +90,22 @@ export const updateAvatarController = async (req, res, next) => {
     data,
   });
 }
+
+export const refreshTokensController = async (req, res, next) => {
+  const { refreshToken: cookieToken } = req.cookies || {};
+  if (!cookieToken) {
+    throw createHttpError(401, 'No refresh token provided');
+  }
+  const ip = req.ip;
+  const userAgent = req.get('User-Agent');
+  const { user, tokens } = await refreshTokens({ cookieToken, ip, userAgent });
+  setRefreshTokenCookie(res, tokens.refreshToken);
+  res.json({
+    status: 200,
+    message: 'Refresh token was syccessfully retrived',
+    data: {
+      user,
+      accessToken: tokens.accessToken,
+    }
+  });
+};

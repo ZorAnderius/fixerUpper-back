@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
-import { generateTokens } from '../utils/tokenServices.js';
+import { generateTokens, verifyRefreshToken } from '../utils/tokenServices.js';
 import { getRefreshToken } from './refreshTokenServices.js';
 import { validateCode } from '../utils/googleOAuth.js';
 import createHttpError from "http-errors";
@@ -47,7 +47,8 @@ export const register = async ({ userData, ip, userAgent }) => {
       id: newUser.id,
       firstName: newUser.firstName,
       lastName: newUser.lastName,
-      avatarUrl: newUser.avatarUrl,
+      avatarUrl: newUser.avatar_url,
+      role: user.role
     },
     tokens
   }
@@ -66,7 +67,8 @@ export const login = async ({ userData, ip, userAgent }) => {
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
-      avatarUrl: user.avatarUrl
+      avatarUrl: user.avatar_url,
+      role: user.role
     },
     tokens
   }
@@ -77,6 +79,7 @@ export const authenticateWithGoogleOAuth = async ({ code, ip, userAgent }) => {
   const { payload } = authTicket;
   if (!payload) throw createHttpError(401, 'Not authorized');
   let user = await findUser({ email: payload.email });
+  // if (user) throw createHttpError(404, 'User already exist');
   if (!user) {
     const pas = randomBytes(10);
     const password = await bcrypt.hash(pas, 11);
@@ -103,6 +106,7 @@ export const authenticateWithGoogleOAuth = async ({ code, ip, userAgent }) => {
       email: user.email,
       phoneNumber: user.phoneNumber,
       avatarUrl: user.avatar_url,
+      role: user.role
     },
     tokens
   };
@@ -120,11 +124,11 @@ export const logout = async ({ userId, jti }) => {
 
 export const updateAvatar = async ({ id, file, folderName }) => {
   if (!file) throw createHttpError(400, responseMessage.COMMON.FILE_MISSING);
-  const user = await findUser({id});
+  const user = await findUser({ id });
   if (!user) throw createHttpError(401, responseMessage.USER.UNAUTHORIZED);
   try {
     const avatar_url = await saveToCloudinary(file, folderName);
-    await user.update({ avatar_url}, { returning: true });
+    await user.update({ avatar_url }, { returning: true });
     return {
       id: user.id,
       avatarUrl: user.avatar_url,
@@ -133,3 +137,19 @@ export const updateAvatar = async ({ id, file, folderName }) => {
     throw createHttpError(500, responseMessage.USER.FAIL_UPDATE_AVATAR);
   }
 }
+
+
+export const refreshTokens = async ({ cookieToken, ip, userAgent }) => {
+  const { payload, user } = await verifyRefreshToken(cookieToken);
+  const tokens = await generateTokens({
+    id: user.id,
+    email: user.email,
+    ip,
+    userAgent,
+    previousToken: cookieToken,
+  });
+  return {
+    tokens,
+    user,
+  };
+};

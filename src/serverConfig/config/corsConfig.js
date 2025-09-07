@@ -1,4 +1,4 @@
-const whitelist = ['http://localhost:3000'];
+const whitelist = ['http://localhost:3000', 'http://localhost:5180', 'http://localhost:5180'];
 
 const corsOptions = {
   origin: (origin, cb) => {
@@ -11,7 +11,7 @@ const corsOptions = {
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-No-CSRF'],
-  credential: true
+  credentials: true
 }
 
 export default corsOptions;

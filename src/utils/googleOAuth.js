@@ -49,13 +49,14 @@ export const generateAuthUrl = () => {
  */
 export const validateCode = async code => {
   try {
-    const response = await googleOAuthClient.getToken({code});
+    const response = await googleOAuthClient.getToken({ code });
     if (!response.tokens.id_token) throw createHttpError(401, 'Not authorized');
     const ticket = await googleOAuthClient.verifyIdToken({
       idToken: response.tokens.id_token,
     });
     return ticket;
   } catch (error) {
+    console.log(error.message);
     if (error.status === 400) throw createHttpError(error.status, 'Token is invalid');
     throw createHttpError(401, 'Not authorized');
   }

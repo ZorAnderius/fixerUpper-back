@@ -12,7 +12,7 @@ const colors = {
 
 morgan.format("tiny-colored", (tokens, req, res) => {
   const method = tokens.method(req, res);
-  const color = colors[method] || color.RESET;
+  const color = colors[method] || colors.RESET;
   return `${color}${method} ${color.URL}${tokens.url(req, res)} ${color}${tokens.status(req, res)} - ${tokens['response-time'](req, res)} ms${colors.RESET};`;
 })
 
