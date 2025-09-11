@@ -48,7 +48,7 @@ export const register = async ({ userData, ip, userAgent }) => {
       firstName: newUser.firstName,
       lastName: newUser.lastName,
       avatarUrl: newUser.avatar_url,
-      role: user.role
+      role: newUser.role
     },
     tokens
   }

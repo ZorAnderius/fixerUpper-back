@@ -9,6 +9,7 @@ import ProductStatus from "../db/models/ProductStatus.js";
 import updateObjects from "../utils/updateObjects.js";
 import { PRODUCT_IMAGE_FOLDER } from "../constants/cloudinary.js";
 import sequelize from "../db/sequelize.js";
+import { Op } from "sequelize";
 
 export const findProduct = async (query) => {
   return await Product.findOne({ where: query });
@@ -22,9 +23,41 @@ export const getAllProducts = async (
     filter = {}
   }) => {
   const offset = (page - 1) * limit;
+  let whereClause = {};
+  const { categoryId, product, sortBy = 'newest' } = filter;
+  if (categoryId && categoryId !== '') whereClause.category_id = categoryId;
+  if (product && product.trim() !== '') {
+    whereClause[Op.or] = [
+      { title: { [Op.iLike]: `%${product}%` } },
+      { description: { [Op.iLike]: `%${product}%` } }
+    ]
+  }
+
+  let orderClause = [];
+  switch (sortBy) {
+    // case 'newest':
+    //   orderClause = [['createdAt', 'DESC']];
+    //   break;
+    // case 'oldest':
+    //   orderClause = [['createdAt', 'ASC']];
+    //   break;
+    case 'price-low':
+      orderClause = [['price', 'ASC']];
+      break;
+    case 'price-high':
+      orderClause = [['price', 'DESC']];
+      break;
+    case 'name':
+      orderClause = [['title', 'ASC']];
+      break;
+    default:
+      orderClause = [['title', 'ASC']];
+  }
+  console.log(whereClause)
   const { count, rows: products } = await Product.findAndCountAll({
-    where: filter,
+    where: whereClause,
     attributes: { exclude: ['category_id', 'status_id'] },
+    order: orderClause,
     include: [
       { model: Category, as: 'category', attributes: ['id', 'name'] },
       { model: ProductStatus, as: 'status', attributes: ['id', 'status'] },

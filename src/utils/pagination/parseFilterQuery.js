@@ -18,7 +18,8 @@ import parseString from '../parseValues/parseString.js';
 const parseFilterQuery = query => {
   let username = '';
   let productName = '';
-  let categoryName = category[0];
+  let categoryId = '';
+  let sortBy = 'newest'
   const parseQuery = {};
   if (query.username) {
     const temp = parseString(query.username);
@@ -32,8 +33,13 @@ const parseFilterQuery = query => {
   }
   if (query.category) {
     const temp = parseString(query.category);
-    categoryName = temp ? temp : categoryName;
-    parseQuery.category = categoryName;
+    categoryId = temp ? temp : categoryId;
+    parseQuery.categoryId = categoryId;
+  }
+  if (query.sortBy) {
+    const temp = parseString(query.sortBy);
+    sortBy = temp ? temp : sortBy;
+    parseQuery.sortBy = sortBy;
   }
   return parseQuery;
 };

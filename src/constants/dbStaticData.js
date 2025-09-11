@@ -9,7 +9,6 @@ export const productStates = [
 ]
 
 export const category = [
-  "All",
   "Hand Tools",
   "Power Tools",
   "Measuring Tools",
