@@ -15,9 +15,6 @@ import generateCsrfToken from './generateCSRFToken.js';
 const accessSecret = env(ENV_VARS.JWT_ACCESS_SECRET);
 const refreshSecret = env(ENV_VARS.JWT_REFRESH_SECRET);
 
-
-
-
 /**
  * Generates a JWT access token for a user.
  *

@@ -1,3 +1,6 @@
+import createHttpError from 'http-errors';
+import responseMessage from '../../constants/resMessage.js';
+
 const blacklist = ["POST", "PUT", "PATCH", "DELETE"];
 
 /**
@@ -17,10 +20,10 @@ const csrfHeaderCheck = (req, res, next) => {
   if (!blacklist.includes(method)) return next();
 
   const headerToken = req.headers['x-csrf-token'];
-  const cookieToken = req.cookies?.csrf_token;
+  const cookieToken = req.cookies?.csrfToken;
 
   if (!headerToken || !cookieToken || headerToken !== cookieToken) {
-    return next(createHttpError(403, 'CSRF header missing'));
+    return next(createHttpError(403, responseMessage.COMMON.CSRF));
   }
   next();
 }
