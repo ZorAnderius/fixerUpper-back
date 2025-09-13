@@ -1,3 +1,5 @@
+const blacklist = ["POST", "PUT", "PATCH", "DELETE"];
+
 /**
  * Middleware to protect against CSRF attacks using a custom header.
  *
@@ -12,10 +14,13 @@
  */
 const csrfHeaderCheck = (req, res, next) => {
   const method = req.method.toUpperCase();
-  if (['POST', 'PUT', 'DELETE'].includes(method)) {
-    if (!req.headers['x-no-csrf']) {
-      return res.status(403).json({ message: 'CSRF header missing' });
-    }
+  if (!blacklist.includes(method)) return next();
+
+  const headerToken = req.headers['x-csrf-token'];
+  const cookieToken = req.cookies?.csrf_token;
+
+  if (!headerToken || !cookieToken || headerToken !== cookieToken) {
+    return next(createHttpError(403, 'CSRF header missing'));
   }
   next();
 }

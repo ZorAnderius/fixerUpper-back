@@ -6,6 +6,7 @@ import ENV_VARS from '../constants/envVars.js';
 import env from './envConfig.js';
 import { MAX_AGE_ACCESS_TOKENS, MAX_AGE_REFRESH_TOKENS } from '../constants/tokenLifeTime.js';
 import { createAndRevokeOldRefreshTokens, getRefreshTokenAndUser } from '../services/refreshTokenServices.js';
+import generateCsrfToken from './generateCSRFToken.js';
 
 /**
  * JWT secrets for signing access and refresh tokens.
@@ -13,6 +14,9 @@ import { createAndRevokeOldRefreshTokens, getRefreshTokenAndUser } from '../serv
  */
 const accessSecret = env(ENV_VARS.JWT_ACCESS_SECRET);
 const refreshSecret = env(ENV_VARS.JWT_REFRESH_SECRET);
+
+
+
 
 /**
  * Generates a JWT access token for a user.
@@ -94,7 +98,8 @@ export const generateRefreshToken = async ({ id, ip, userAgent }) => {
 export const generateTokens = async ({ id, email, ip, userAgent, previousToken = null }) => {
   const accessToken = generateAccessToken(id, email);
   const refreshToken = await generateRefreshToken({ id, ip, userAgent, previousToken });
-  return { accessToken, refreshToken };
+  const csrfToken = generateCsrfToken()
+  return { accessToken, refreshToken, csrfToken };
 };
 
 /**

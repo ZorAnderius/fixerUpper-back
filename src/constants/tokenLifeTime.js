@@ -1,4 +1,6 @@
 export const REFRESH_TOKEN_COOKIE = 'refreshToken';
+export const CSRF_TOKEN_COOKIE = 'csrfToken';
+export const MAX_AGE_CSRF_TOKEN = 7 * 24 * 60 * 60;
 export const MAX_AGE_REFRESH_TOKENS = 7 * 24 * 60 * 60; // 7 day
 
 export const MAX_AGE_ACCESS_TOKENS = 15 * 60; // 15 minutes
@@ -9,7 +11,7 @@ export const AUTH_ATTEMPTS_WINDOW = 15 * 60 * 1000; // 15 minutes window for aut
 
 // API request attempts limits
 export const API_ATTEMPTS_LIMIT = 60; // Maximum API request attempts before temporary lockout
-export const API_ATTEMPTS_WINDOW =  60 * 1000; // 1 minute window for API request attempts
+export const API_ATTEMPTS_WINDOW = 60 * 1000; // 1 minute window for API request attempts
 
 // Sensitive request attempts limits
 export const SENSITIVE_ATTEMPTS_LIMIT = 30; // Maximum sensitive request attempts before permanent lockout

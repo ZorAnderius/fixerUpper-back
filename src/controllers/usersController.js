@@ -6,6 +6,7 @@ import RegisterUser from "../dto/users/register.js"
 import { getRefreshToken } from "../services/refreshTokenServices.js";
 import { authenticateWithGoogleOAuth, findUserById, login, logout, refreshTokens, register, updateAvatar } from "../services/usersService.js";
 import { generateAuthUrl } from "../utils/googleOAuth.js";
+import { setCSRFTokenCookie } from "../utils/setCRSFTokenCookie.js";
 import { setRefreshTokenCookie } from "../utils/setRefreshTokenCookie.js";
 
 export const registerController = async (req, res, next) => {
@@ -14,6 +15,7 @@ export const registerController = async (req, res, next) => {
   const userAgent = req.get('User-Agent');
   const { user, tokens } = await register({ userData, ip, userAgent });
   setRefreshTokenCookie(res, tokens.refreshToken);
+  setCSRFTokenCookie(res, tokens.csrfToken);
   res.status(201).json({
     status: 201,
     message: responseMessage.USER.CREATED,
@@ -30,6 +32,7 @@ export const loginControllers = async (req, res, next) => {
   const userAgent = req.get('User-Agent');
   const { user, tokens } = await login({ userData, ip, userAgent });
   setRefreshTokenCookie(res, tokens.refreshToken);
+  setCSRFTokenCookie(res, tokens.csrfToken);
   res.json({
     status: 200,
     message: responseMessage.USER.LOGIN,
@@ -55,6 +58,7 @@ export const authenticateWithGoogleOAuthController = async (req, res, next) => {
   const userAgent = req.get('User-Agent');
   const { user, tokens } = await authenticateWithGoogleOAuth({ code, ip, userAgent });
   setRefreshTokenCookie(res, tokens.refreshToken);
+  setCSRFTokenCookie(res, tokens.csrfToken);
   res.json({
     status: 200,
     message: responseMessage.USER.SUCCESS_OAUTH,
@@ -100,6 +104,7 @@ export const refreshTokensController = async (req, res, next) => {
   const userAgent = req.get('User-Agent');
   const { user, tokens } = await refreshTokens({ cookieToken, ip, userAgent });
   setRefreshTokenCookie(res, tokens.refreshToken);
+  setCSRFTokenCookie(res, tokens.csrfToken);
   res.json({
     status: 200,
     message: 'Refresh token was syccessfully retrived',
