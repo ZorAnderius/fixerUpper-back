@@ -6,7 +6,7 @@ import ctrlWrapper from "../utils/ctrlWrapper.js";
 import validateBody from "../utils/validateBody.js";
 import createCartItemsSchema from "../schemas/cartsSchema/createCartItemsSchema.js";
 import updateCartItemsSchema from "../schemas/cartsSchema/updateCartItemSchena.js";
-import { checkoutCartController, createCartItemController, getCartItemsController, updateCartController } from "../controllers/cartsController.js";
+import { checkoutCartController, createCartItemController, deleteCartItemController, getCartItemsController, updateCartController } from "../controllers/cartsController.js";
 import { inputSanitizationGuards, originGuards } from "../middlewares/middlewareSet.js";
 
 const cartsRouter = express.Router();
@@ -21,5 +21,7 @@ cartsRouter.post('/add', [...inputSanitizationGuards, validateBody(createCartIte
 cartsRouter.patch('/:id/update', [...inputSanitizationGuards, validateBody(updateCartItemsSchema), ...apiLimit], ctrlWrapper(updateCartController));
 
 cartsRouter.post('/:id/checkout', [...originGuards, secureInput, ...apiLimit], ctrlWrapper(checkoutCartController));
+
+cartsRouter.delete('/:id/remove', [...originGuards, secureInput, ...apiLimit], ctrlWrapper(deleteCartItemController));
 
 export default cartsRouter;

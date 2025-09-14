@@ -1,7 +1,7 @@
 import responseMessage from "../constants/resMessage.js";
 import CartItemDTO from "../dto/cart/CartItemDTO.js";
 import UpdateCartItemDTO from "../dto/cart/UpdateCartItemDTO.js";
-import { checkoutCart, createCartItem, getCartItems, updateCart } from "../services/cartsService.js";
+import { checkoutCart, createCartItem, deleteCartItem, getCartItems, updateCart } from "../services/cartsService.js";
 
 export const createCartItemController = async (req, res, next) => {
   const user_id = req.user.id;
@@ -47,3 +47,14 @@ export const checkoutCartController = async (req, res, next) => {
     data,
   });
 };
+
+
+export const deleteCartItemController = async (req, res, next) => {
+  const user_id = req.user.id;
+  const id = req.params.id;
+  await deleteCartItem({ user_id, id });
+  res.json({
+    status: 200,
+    message: responseMessage.CART_ITEM.REMOVED,
+  });
+}

@@ -151,8 +151,8 @@ export const updateCart = async ({ user_id, id, quantity }) => {
         newQuantity < requeiredQuantity
           ? `We set ${newQuantity} of ${currentProduct.name} instead of ${quantity}, because ${quantity - newQuantity} items are out of stock.`
           : quantity > 0
-          ? 'Number of items was increased.'
-          : 'Number of items was decreased.';
+            ? 'Number of items was increased.'
+            : 'Number of items was decreased.';
     }
     return {
       cart: await getCartItems({ user_id }, { transaction: t }),
@@ -160,6 +160,17 @@ export const updateCart = async ({ user_id, id, quantity }) => {
     };
   });
 };
+
+export const deleteCartItem = async ({ user_id, id }) => {
+  await sequelize.transaction(async t => {
+    const cart = await findCart({ user_id }, { transaction: t });
+    if (!cart) throw createHttpError(404, responseMessage.CART.NOT_FOUND);
+    const cartItem = await findCartItem(({ id, cart_id: cart.id }), { transaction: t });
+    if (!cartItem) throw createHttpError(404, responseMessage.CART_ITEM.NOT_FOUND);
+    await cartItem.destroy({ transaction: t });
+    return;
+  });
+}
 
 export const checkoutCart = async ({ user_id, id }) => {
   return sequelize.transaction(async t => {
