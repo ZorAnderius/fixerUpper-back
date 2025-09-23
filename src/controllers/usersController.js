@@ -8,7 +8,7 @@ import { getRefreshToken } from "../services/refreshTokenServices.js";
 import { authenticateWithGoogleOAuth, findUserById, login, logout, refreshTokens, register, updateAvatar } from "../services/usersService.js";
 import { generateAuthUrl } from "../utils/googleOAuth.js";
 import { setCSRFTokenCookie } from "../utils/setCRSFTokenCookie.js";
-import { setRefreshTokenCookie } from "../utils/setRefreshTokenCookie.js";
+import { clearRefreshTokenCookie, setRefreshTokenCookie } from "../utils/setRefreshTokenCookie.js";
 
 export const registerController = async (req, res, next) => {
   const userData = new RegisterUser(req.body);
@@ -74,6 +74,8 @@ export const logoutController = async (req, res, next) => {
   const userId = req.user.id;
   const jti = req.jti;
   await logout({ userId, jti });
+  clearRefreshTokenCookie(res);
+  clearCSRFTokenCookie(res);
   res.status(204).send();
 }
 

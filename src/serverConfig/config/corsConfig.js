@@ -10,7 +10,7 @@ const corsOptions = {
     }
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-No-CSRF'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
   credentials: true
 }
 

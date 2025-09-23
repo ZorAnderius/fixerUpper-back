@@ -21,6 +21,7 @@ export const findUserById = async id => {
     lastName: user.lastName,
     phoneNumber: user.phoneNumber,
     avatar_url: user.avatar_url,
+    role: user.role
   }
 }
 
@@ -79,7 +80,6 @@ export const authenticateWithGoogleOAuth = async ({ code, ip, userAgent }) => {
   const { payload } = authTicket;
   if (!payload) throw createHttpError(401, 'Not authorized');
   let user = await findUser({ email: payload.email });
-  // if (user) throw createHttpError(404, 'User already exist');
   if (!user) {
     const pas = randomBytes(10);
     const password = await bcrypt.hash(pas, 11);

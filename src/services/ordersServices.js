@@ -62,7 +62,7 @@ export const getOrderById = async (id) => {
 export const getAllOrders = async ({ user_id, pagination: { page = 1, limit = 10 }, filter = {} }) => {
   const offset = (page - 1) * limit;
   const { count, rows: orders } = await Order.findAndCountAll({
-    where: { user_id, ...filter },
+    where: { user_id: user_id, ...filter },
     attributes: { exclude: ['user_id'] },
     include: [
       {
@@ -90,9 +90,10 @@ export const getAllOrders = async ({ user_id, pagination: { page = 1, limit = 10
     order: [['createdAt', 'DESC']],
     offset,
     limit,
+    distinct: true,
   });
 
-  const paginationValues = countPaginationQuery(orders.length, page, limit);
+  const paginationValues = countPaginationQuery(count, page, limit);
   if (page > paginationValues.totalPages || page < 1) throw createHttpError(400, responseMessage.PRODUCT.PAGINATION);
   return orders?.length > 0
     ? {

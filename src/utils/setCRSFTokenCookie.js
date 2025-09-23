@@ -11,3 +11,11 @@ export const setCSRFTokenCookie = (res, token) => {
   };
   res.cookie(CSRF_TOKEN_COOKIE, token, cookieOptions);
 };
+
+export const clearCSRFTokenCookie = res => {
+  res.clearCookie(CSRF_TOKEN_COOKIE, {
+    httpOnly: false,
+    secure: env(ENV_VARIABLES.NODE_ENV) === 'production',
+    sameSite: 'Strict',
+  });
+};
