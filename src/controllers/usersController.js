@@ -7,7 +7,7 @@ import RegisterUser from "../dto/users/register.js"
 import { getRefreshToken } from "../services/refreshTokenServices.js";
 import { authenticateWithGoogleOAuth, findUserById, login, logout, refreshTokens, register, updateAvatar } from "../services/usersService.js";
 import { generateAuthUrl } from "../utils/googleOAuth.js";
-import { setCSRFTokenCookie } from "../utils/setCRSFTokenCookie.js";
+import { clearCSRFTokenCookie, setCSRFTokenCookie } from "../utils/setCRSFTokenCookie.js";
 import { clearRefreshTokenCookie, setRefreshTokenCookie } from "../utils/setRefreshTokenCookie.js";
 
 export const registerController = async (req, res, next) => {

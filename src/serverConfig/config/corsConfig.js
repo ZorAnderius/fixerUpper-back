@@ -1,17 +1,28 @@
-const whitelist = ['http://localhost:3000', 'http://localhost:5180', 'http://localhost:5180'];
+const whitelist = ['https://my-pharmacy-web-green.vercel.app', 'http://localhost:3000', 'http://localhost:5179'];
 
+/**
+ * CORS configuration options for Express.
+ *
+ * @typedef {Object} CorsOptions
+ * @property {function(string|null, function(Error|null, boolean)): void} origin - Function to check if the request origin is allowed.
+ * If `origin` is in the whitelist or missing, the callback is called with `true`. Otherwise, an error is passed.
+ * @property {boolean} credentials - Indicates whether to allow credentials (cookies, authorization headers) in CORS requests.
+ *
+ * @usage
+ * app.use(cors(corsOptions));
+ */
 const corsOptions = {
-  origin: (origin, cb) => {
-    if (!origin) return cb(null, true);
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
     if (whitelist.includes(origin)) {
-      cb(null, true);
+      callback(null, true);
     } else {
-      cb(new Error('Not allowed by CORS'));
+      callback(new Error('Not allowed by CORS'));
     }
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization', 'x-csrf-token'],
-  credentials: true
-}
+  credentials: true,
+};
 
 export default corsOptions;
