@@ -19,6 +19,12 @@ const csrfHeaderCheck = (req, res, next) => {
   const method = req.method.toUpperCase();
   if (!blacklist.includes(method)) return next();
 
+  // Skip CSRF check for certain endpoints that don't need it
+  const skipCSRFPaths = ['/logout', '/refresh', '/request-google-oauth', '/confirm-oauth'];
+  if (skipCSRFPaths.some(path => req.path === path || req.path.endsWith(path))) {
+    return next();
+  }
+
   const headerToken = req.headers['x-csrf-token'];
   const cookieToken = req.cookies?.csrfToken;
 
