@@ -81,6 +81,14 @@ export const logoutController = async (req, res, next) => {
 
 export const currentUserController = async (req, res, next) => {
   const data = await findUserById(req.user.id);
+  
+  // Set CSRF token for cross-domain requests
+  if (req.user && req.user.id) {
+    const { generateTokens } = await import('../services/authServices.js');
+    const tokens = await generateTokens(req.user);
+    setCSRFTokenCookie(res, tokens.csrfToken);
+  }
+  
   res.json({
     status: 200,
     message: responseMessage.USER.CURRENT,

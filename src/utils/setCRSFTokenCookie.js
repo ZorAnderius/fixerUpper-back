@@ -4,12 +4,15 @@ import env from './envConfig.js';
 
 export const setCSRFTokenCookie = (res, token) => {
   const isProduction = env(ENV_VARS.NODE_ENV) === 'production';
+  
+  // For cross-domain requests (localhost -> render.com), we need special settings
   const cookieOptions = {
     httpOnly: false,
-    secure: isProduction,
-    sameSite: isProduction ? 'None' : 'Lax', // Lax for localhost, None for production
+    secure: true, // Always secure for cross-domain
+    sameSite: 'None', // Must be None for cross-domain
     maxAge: MAX_AGE_CSRF_TOKEN * 1000,
-    path: '/', // Explicitly set path
+    path: '/',
+    domain: undefined, // Don't set domain to allow cross-domain access
   };
   
   console.log('🍪 Setting CSRF token cookie:', {
