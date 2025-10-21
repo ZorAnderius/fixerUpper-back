@@ -39,7 +39,8 @@ export const loginControllers = async (req, res, next) => {
     message: responseMessage.USER.LOGIN,
     data: {
       user,
-      accessToken: tokens.accessToken
+      accessToken: tokens.accessToken,
+      csrfToken: tokens.csrfToken
     }
   })
 }
@@ -87,13 +88,23 @@ export const currentUserController = async (req, res, next) => {
     const { generateTokens } = await import('../services/authServices.js');
     const tokens = await generateTokens(req.user);
     setCSRFTokenCookie(res, tokens.csrfToken);
+    
+    // Also include CSRF token in response body for cross-domain access
+    res.json({
+      status: 200,
+      message: responseMessage.USER.CURRENT,
+      data: {
+        ...data,
+        csrfToken: tokens.csrfToken
+      }
+    });
+  } else {
+    res.json({
+      status: 200,
+      message: responseMessage.USER.CURRENT,
+      data
+    });
   }
-  
-  res.json({
-    status: 200,
-    message: responseMessage.USER.CURRENT,
-    data
-  })
 }
 
 export const updateAvatarController = async (req, res, next) => {
