@@ -9,12 +9,14 @@ export const setCSRFTokenCookie = (res, token) => {
     secure: isProduction,
     sameSite: isProduction ? 'None' : 'Lax', // Lax for localhost, None for production
     maxAge: MAX_AGE_CSRF_TOKEN * 1000,
+    path: '/', // Explicitly set path
   };
   
   console.log('🍪 Setting CSRF token cookie:', {
     token: token.substring(0, 10) + '...',
     options: cookieOptions,
-    isProduction
+    isProduction,
+    nodeEnv: env(ENV_VARS.NODE_ENV)
   });
   
   res.cookie(CSRF_TOKEN_COOKIE, token, cookieOptions);
