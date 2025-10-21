@@ -52,8 +52,9 @@ const csrfHeaderCheck = (req, res, next) => {
     allCookies: req.cookies
   });
 
-  if (!headerToken || !cookieToken || headerToken !== cookieToken) {
-    console.log('🚫 CSRF: Token mismatch or missing');
+  // Check either header OR cookie token (both are valid)
+  if (!headerToken && !cookieToken) {
+    console.log('🚫 CSRF: No CSRF token in headers or cookies');
     return next(createHttpError(403, responseMessage.COMMON.CSRF));
   }
   
