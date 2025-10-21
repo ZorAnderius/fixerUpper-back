@@ -17,7 +17,11 @@ const blacklist = ["POST", "PUT", "PATCH", "DELETE"];
  */
 const csrfHeaderCheck = (req, res, next) => {
   const method = req.method.toUpperCase();
-  if (!blacklist.includes(method)) return next();
+  // Only check CSRF for state-changing methods (POST, PUT, PATCH, DELETE)
+  if (!blacklist.includes(method)) {
+    console.log(`✅ CSRF: Skipping CSRF check for ${method} request to ${req.path}`);
+    return next();
+  }
 
   // Skip CSRF check for certain endpoints that don't need it
   const skipCSRFPaths = ['/logout', '/refresh', '/request-google-oauth', '/confirm-oauth'];
