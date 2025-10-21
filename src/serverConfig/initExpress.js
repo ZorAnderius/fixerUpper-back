@@ -16,7 +16,7 @@ import sanitizeRequest from '../middlewares/security/sanitizeRequest.js';
  * - Helmet: Security headers using custom `helmetOptions`.
  * - Cookie Parser: Parses cookies from the request headers.
  * - express.json(): Parses incoming JSON requests with `Content-Type: application/json`.
- * - express.urlencoded(): Parses URL-encoded payloads with a 200kb limit.
+ * - express.urlencoded(): Parses URL-encoded payloads with a 5mb limit.
  * - express.static(): Serves static files from the 'public' directory.
  * - Sanitize Request: Cleans and validates incoming request data.
  */
@@ -31,7 +31,7 @@ app.use(
     type: ['application/json'],
   })
 );
-app.use(express.urlencoded({ extended: true, limit: '200kb' }));
+app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 app.use(express.static('public'));
 
 app.use(sanitizeRequest());
