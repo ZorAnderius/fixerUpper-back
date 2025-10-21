@@ -25,12 +25,39 @@ const csrfHeaderCheck = (req, res, next) => {
     return next();
   }
 
+  // Check Origin header for additional security
+  const origin = req.headers.origin;
+  const referer = req.headers.referer;
+  const allowedOrigins = [
+    'http://localhost:5179',
+    'http://localhost:3000',
+    'https://fixer-upper-front.vercel.app',
+    'https://fixerupper-front.vercel.app'
+  ];
+
+  if (origin && !allowedOrigins.includes(origin)) {
+    console.log('🚫 CSRF: Invalid origin:', origin);
+    return next(createHttpError(403, 'Invalid origin'));
+  }
+
   const headerToken = req.headers['x-csrf-token'];
   const cookieToken = req.cookies?.csrfToken;
 
+  console.log('🔍 CSRF Check:', {
+    method: req.method,
+    url: req.url,
+    origin: req.headers.origin,
+    headerToken: headerToken ? headerToken.substring(0, 10) + '...' : 'missing',
+    cookieToken: cookieToken ? cookieToken.substring(0, 10) + '...' : 'missing',
+    allCookies: req.cookies
+  });
+
   if (!headerToken || !cookieToken || headerToken !== cookieToken) {
+    console.log('🚫 CSRF: Token mismatch or missing');
     return next(createHttpError(403, responseMessage.COMMON.CSRF));
   }
+  
+  console.log('✅ CSRF: Token validated successfully');
   next();
 }
 
