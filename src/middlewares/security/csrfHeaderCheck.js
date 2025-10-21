@@ -20,14 +20,12 @@ const csrfHeaderCheck = (req, res, next) => {
   
   // Only check CSRF for state-changing methods (POST, PUT, PATCH, DELETE)
   if (!blacklist.includes(method)) {
-    console.log(`✅ CSRF: Skipping CSRF check for ${method} request to ${req.path}`);
     return next();
   }
 
   // Skip CSRF check for certain endpoints that don't need it
   const skipCSRFPaths = ['/logout', '/refresh', '/request-google-oauth', '/confirm-oauth'];
   if (skipCSRFPaths.some(path => req.path === path || req.path.endsWith(path))) {
-    console.log(`✅ CSRF: Skipping CSRF check for ${req.path}`);
     return next();
   }
 
@@ -41,29 +39,17 @@ const csrfHeaderCheck = (req, res, next) => {
   ];
 
   if (origin && !allowedOrigins.includes(origin)) {
-    console.log('🚫 CSRF: Invalid origin:', origin);
     return next(createHttpError(403, 'Invalid origin'));
   }
 
   const headerToken = req.headers['x-csrf-token'];
   const cookieToken = req.cookies?.csrfToken;
 
-  console.log('🔍 CSRF Check:', {
-    method: req.method,
-    url: req.url,
-    origin: req.headers.origin,
-    headerToken: headerToken ? headerToken.substring(0, 10) + '...' : 'missing',
-    cookieToken: cookieToken ? cookieToken.substring(0, 10) + '...' : 'missing',
-    allCookies: req.cookies
-  });
 
   // Check either header OR cookie token (both are valid)
   if (!headerToken && !cookieToken) {
-    console.log('🚫 CSRF: No CSRF token in headers or cookies');
     return next(createHttpError(403, responseMessage.COMMON.CSRF));
   }
-  
-  console.log('✅ CSRF: Token validated successfully');
   next();
 }
 
