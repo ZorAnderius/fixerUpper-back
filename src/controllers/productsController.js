@@ -56,9 +56,21 @@ export const updateProductController = async (req, res, next) => {
 export const deleteProductController = async (req, res, next) => {
   const { id } = req.params;
   if (!id) throw createHttpError(400, responseMessage.PRODUCT.VALIDATE_ID);
-  await deleteProduct(id);
-  res.json({
-    status: 200,
-    message: responseMessage.PRODUCT.DELETED,
-  });
+  
+  try {
+    await deleteProduct(id);
+    res.json({
+      status: 200,
+      message: responseMessage.PRODUCT.DELETED,
+    });
+  } catch (error) {
+    if (error.name === 'SequelizeForeignKeyConstraintError') {
+      return res.status(400).json({
+        status: 400,
+        message: 'Cannot delete product: it is currently in users\' carts. Please remove it from all carts first.',
+        error: 'FOREIGN_KEY_CONSTRAINT'
+      });
+    }
+    throw error;
+  }
 };
