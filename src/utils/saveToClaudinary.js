@@ -45,18 +45,40 @@ cloudinary.v2.config({
  */
 const saveToCloudinary = async (file, folderName = "") => {
     return new Promise((resolve, reject) => {
+        // Validate file buffer
+        if (!file || !file.buffer) {
+            reject(new Error('Invalid file metadata: No file buffer provided'));
+            return;
+        }
+        
+        // Validate file size
+        if (file.buffer.length === 0) {
+            reject(new Error('Invalid file metadata: Empty file buffer'));
+            return;
+        }
+        
         const uploadOptions = {
             resource_type: "image",
+            // Add validation options
+            allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif'],
+            // Disable metadata extraction that might cause issues
+            eager: [],
+            // Add error handling
+            invalidate: true
         };
+        
         if(folderName) uploadOptions.folder = folderName;
-        const stream = cloudinary.v2.uploader.upload_stream( uploadOptions, (error, result) => {
+        
+        const stream = cloudinary.v2.uploader.upload_stream(uploadOptions, (error, result) => {
             if (error) {
-                reject(error);
+                console.error('Cloudinary upload error:', error);
+                reject(new Error(`Invalid file metadata: ${error.message}`));
             } else {
                 resolve(result.secure_url);
             }
         });
-        stream.end(file.buffer)
+        
+        stream.end(file.buffer);
     });
 }
 
