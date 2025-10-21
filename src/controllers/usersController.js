@@ -85,7 +85,7 @@ export const currentUserController = async (req, res, next) => {
   
   // Set CSRF token for cross-domain requests
   if (req.user && req.user.id) {
-    const { generateTokens } = await import('../services/authServices.js');
+    const { generateTokens } = await import('../utils/tokenServices.js');
     const tokens = await generateTokens(req.user);
     setCSRFTokenCookie(res, tokens.csrfToken);
     

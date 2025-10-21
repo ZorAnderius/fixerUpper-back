@@ -17,6 +17,7 @@ const blacklist = ["POST", "PUT", "PATCH", "DELETE"];
  */
 const csrfHeaderCheck = (req, res, next) => {
   const method = req.method.toUpperCase();
+  
   // Only check CSRF for state-changing methods (POST, PUT, PATCH, DELETE)
   if (!blacklist.includes(method)) {
     console.log(`✅ CSRF: Skipping CSRF check for ${method} request to ${req.path}`);
@@ -26,12 +27,12 @@ const csrfHeaderCheck = (req, res, next) => {
   // Skip CSRF check for certain endpoints that don't need it
   const skipCSRFPaths = ['/logout', '/refresh', '/request-google-oauth', '/confirm-oauth'];
   if (skipCSRFPaths.some(path => req.path === path || req.path.endsWith(path))) {
+    console.log(`✅ CSRF: Skipping CSRF check for ${req.path}`);
     return next();
   }
 
   // Check Origin header for additional security
   const origin = req.headers.origin;
-  const referer = req.headers.referer;
   const allowedOrigins = [
     'http://localhost:5179',
     'http://localhost:3000',

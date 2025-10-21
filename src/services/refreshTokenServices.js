@@ -115,7 +115,7 @@ export const getRefreshTokenAndUser = async query => {
       {
         model: User,
         as: 'user',
-        attributes: ['id', 'email', 'firstName', 'lastName', 'phoneNumber', 'avatar_url'],
+        attributes: ['id', 'email', 'firstName', 'lastName', 'phoneNumber', 'avatar_url', 'role'],
       },
     ],
   });
