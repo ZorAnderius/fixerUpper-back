@@ -15,7 +15,7 @@ export const setCSRFTokenCookie = (res, token) => {
     domain: undefined, // Don't set domain to allow cross-domain access
   };
   
-  console.log('🍪 Setting CSRF token cookie:', {
+  console.log('Setting CSRF token cookie:', {
     token: token.substring(0, 10) + '...',
     options: cookieOptions,
     isProduction,
